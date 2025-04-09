@@ -1,8 +1,10 @@
 # Store App
 
-<p align="center">
-  <img src="https://avatars.githubusercontent.com/u/65936116?v=4" alt="Mi Foto" style="width:200px;height:200px;border-radius:50%;object-fit:cover;">
-</p>
+<div align="center">
+  <img src="https://avatars.githubusercontent.com/u/65936116?v=4" 
+    alt="Daniel Restrepo" 
+    style="width:200px;height:200px;border-radius:50%;object-fit:cover;">
+</div>
 
 ## Información del Estudiante
 

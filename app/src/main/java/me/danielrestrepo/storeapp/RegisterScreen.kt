@@ -135,21 +135,7 @@ fun RegisterScreen(){
                     containerColor = Color(0xFFFF9900)
                 )
             ) {
-                Text("iniciar Sesion")
-            }
-            TextButton(onClick = {})
-            {
-                Text(
-                    text = "¿Olvidaste tu contraseña?",
-                    color = Color(0xFFFF9900)
-                )
-            }
-            TextButton(onClick = {})
-            {
-                Text(
-                    text = "¿No tienes cuenta? Registrate",
-                    color = Color(0xFFFF9900)
-                )
+                Text("Crear cuenta")
             }
         }
     }

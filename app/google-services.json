@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "620507976184",
+    "project_id": "storeapp-f9dd2",
+    "storage_bucket": "storeapp-f9dd2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:620507976184:android:0a6226d1b5ee3f807cc60d",
+        "android_client_info": {
+          "package_name": "me.danielrestrepo.storeapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbHUxgG73Mg411Szm-67JvvT3fv-3Dtww"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

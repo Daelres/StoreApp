@@ -31,11 +31,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.rememberAsyncImagePainter
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(onClickExit : ()->Unit = {}){
+fun HomeScreen(onClickExit: () -> Unit = {}) {
+
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val auth = Firebase.auth
+
     Scaffold(
         topBar = {
             MediumTopAppBar(
@@ -59,7 +64,10 @@ fun HomeScreen(onClickExit : ()->Unit = {}){
                     }
                 },
                 actions = {
-                    IconButton(onClick = {onClickExit}) {
+                    IconButton(onClick = {
+                        auth.signOut()
+                        onClickExit()
+                    }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ExitToApp,
                             contentDescription = "Localized description"
@@ -69,7 +77,7 @@ fun HomeScreen(onClickExit : ()->Unit = {}){
                 scrollBehavior = scrollBehavior
             )
         }
-    ) { innerPadding->
+    ) { innerPadding ->
 
         Column(modifier = Modifier.padding(innerPadding)) {
             Text(
@@ -87,17 +95,18 @@ fun HomeScreen(onClickExit : ()->Unit = {}){
                 "https://img.freepik.com/vector-gratis/banner-promocion-2x1_52683-50845.jpg",
                 "https://www.shutterstock.com/image-vector/sale-banner-template-design-super-600nw-2424933315.jpg",
                 "https://img.freepik.com/vector-premium/promocion-plantilla-banner-descuento-venta-flash_7087-866.jpg",
-                "https://st.depositphotos.com/61134954/56039/v/450/depositphotos_560394410-stock-illustration-percent-discount-blue-banner-floating.jpg")
+                "https://st.depositphotos.com/61134954/56039/v/450/depositphotos_560394410-stock-illustration-percent-discount-blue-banner-floating.jpg"
+            )
 
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp)
             ) {
-                item {PromoCard(urlImages[0])  }
-                item {PromoCard(urlImages[1])  }
-                item {PromoCard(urlImages[2])  }
-                item {PromoCard(urlImages[3])  }
-                item {PromoCard(urlImages[4])  }
+                item { PromoCard(urlImages[0]) }
+                item { PromoCard(urlImages[1]) }
+                item { PromoCard(urlImages[2]) }
+                item { PromoCard(urlImages[3]) }
+                item { PromoCard(urlImages[4]) }
 
             }
 
@@ -108,19 +117,19 @@ fun HomeScreen(onClickExit : ()->Unit = {}){
 
 @Preview
 @Composable
-fun HomeScreenPreview(){
+fun HomeScreenPreview() {
     HomeScreen()
 }
 
 @Composable
-fun PromoCard(urlImage: String){
-    Card (
+fun PromoCard(urlImage: String) {
+    Card(
         modifier = Modifier
             .width(300.dp)
             .height(180.dp),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-    ){
+    ) {
         Image(
             painter = rememberAsyncImagePainter(urlImage),
             contentDescription = null,

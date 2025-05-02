@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
@@ -36,6 +37,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.firebase.Firebase
@@ -44,7 +48,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.auth
 
 @Composable
-fun LoginScreen(onClickRegister: () -> Unit = {}, onSuccessfulLogin: () -> Unit = {}) {
+fun LoginScreen(onClickRegister: () -> Unit = {}, onSuccessfullLogin: () -> Unit = {}) {
 
     var inputEmail by remember { mutableStateOf("") }
     var inputPassword by remember { mutableStateOf("") }
@@ -95,7 +99,12 @@ fun LoginScreen(onClickRegister: () -> Unit = {}, onSuccessfulLogin: () -> Unit 
                     )
                 },
                 shape = RoundedCornerShape(12.dp),
-                singleLine = true
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.None,
+                    autoCorrectEnabled = false,
+                    keyboardType = KeyboardType.Email
+                )
             )
 
             OutlinedTextField(
@@ -113,7 +122,13 @@ fun LoginScreen(onClickRegister: () -> Unit = {}, onSuccessfulLogin: () -> Unit 
                     )
                 },
                 shape = RoundedCornerShape(12.dp),
-                singleLine = true
+                singleLine = true,
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.None,
+                    autoCorrectEnabled = false,
+                    keyboardType = KeyboardType.Password
+                )
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -130,11 +145,16 @@ fun LoginScreen(onClickRegister: () -> Unit = {}, onSuccessfulLogin: () -> Unit 
 
             Button(
                 onClick = {
-                    if (inputEmail.isNotBlank() && inputPassword.isNotBlank()) {
+
+                    val isValidEmail:Boolean = validateEmail(inputEmail).first
+                    val isValidPassword:Boolean = validatePassword(inputEmail).first
+
+                    if ((inputEmail.isNotBlank() && inputPassword.isNotBlank())
+                        || (isValidPassword || isValidEmail)) {
                         auth.signInWithEmailAndPassword(inputEmail, inputPassword)
                             .addOnCompleteListener(activity) { task ->
                                 if (task.isSuccessful) {
-                                    onSuccessfulLogin()
+                                    onSuccessfullLogin()
                                 } else {
                                     loginError = when(task.exception){
                                         is FirebaseAuthInvalidCredentialsException -> "Correo o contraseña incorrecta"
@@ -144,7 +164,13 @@ fun LoginScreen(onClickRegister: () -> Unit = {}, onSuccessfulLogin: () -> Unit 
                                 }
                             }
                     } else {
-                        loginError = "Los campos no pueden estar vacíos"
+                        loginError = if(!validateEmail(inputEmail).first) {
+                            validateEmail(inputEmail).second
+                        } else if(!validatePassword(inputPassword).first) {
+                            validatePassword(inputPassword).second
+                        } else {
+                            "Los campos no pueden estar vacíos"
+                        }
                     }
                 },
                 modifier = Modifier
@@ -160,15 +186,14 @@ fun LoginScreen(onClickRegister: () -> Unit = {}, onSuccessfulLogin: () -> Unit 
 
             Spacer(modifier = Modifier.height(24.dp))
 
+//            TextButton(onClick = onClickRegister)
+//            {
+//                Text(
+//                    text = "¿Olvidaste tu contraseña?",
+//                    color = Color(0xFFFF9900)
+//                )
+//            }
             TextButton(onClick = onClickRegister)
-            {
-                Text(
-                    text = "¿Olvidaste tu contraseña?",
-                    color = Color(0xFFFF9900)
-                )
-            }
-            TextButton(onClick = {
-            })
             {
                 Text(
                     text = "¿No tienes cuenta? Registrate",

@@ -17,7 +17,7 @@ fun NavigationApp() {
         composable("login") {
             LoginScreen(
                 onClickRegister = { myNavController.navigate("register") },
-                onSuccessfulLogin = {
+                onSuccessfullLogin = {
                     myNavController.navigate("home") {
                         popUpTo("login"){
                             inclusive = true
@@ -26,10 +26,17 @@ fun NavigationApp() {
                 })
         }
         composable("register") {
-            RegisterScreen(onClickBack = { myNavController.popBackStack() })
+            RegisterScreen(onClickBack = { myNavController.popBackStack() },
+                onSuccessfullRegister = {myNavController.navigate("home"){
+                    popUpTo(0)
+                } })
         }
         composable("home") {
-            HomeScreen(onClickExit = { myNavController.navigate("login") })
+            HomeScreen(onClickExit = { myNavController.navigate("login"){
+                popUpTo("login"){
+                    inclusive = true
+                }
+            } })
         }
     }
 }

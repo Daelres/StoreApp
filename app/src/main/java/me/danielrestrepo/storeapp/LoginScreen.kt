@@ -1,7 +1,6 @@
 package me.danielrestrepo.storeapp
 
 import android.app.Activity
-import android.provider.ContactsContract.CommonDataKinds.Email
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,9 +8,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
@@ -36,17 +38,19 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.google.android.gms.auth.api.Auth
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.auth
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(onClickRegister: () -> Unit = {}, onSuccessfulLogin: () -> Unit = {}) {
 
     var inputEmail by remember { mutableStateOf("") }
     var inputPassword by remember { mutableStateOf("") }
+    var loginError by remember { mutableStateOf("") }
 
+    val auth = Firebase.auth
     val activity = LocalView.current.context as Activity
 
     Scaffold { innerPadding ->
@@ -54,6 +58,8 @@ fun LoginScreen(navController: NavController) {
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
+                .imePadding()
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 30.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -88,13 +94,13 @@ fun LoginScreen(navController: NavController) {
                         text = "Correo Electrónico"
                     )
                 },
-                shape= RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(12.dp),
                 singleLine = true
             )
 
             OutlinedTextField(
                 value = inputPassword,
-                onValueChange = {inputPassword = it},
+                onValueChange = { inputPassword = it },
                 modifier = Modifier.fillMaxWidth(),
                 leadingIcon = {
                     Icon(
@@ -106,23 +112,40 @@ fun LoginScreen(navController: NavController) {
                         text = "Contraseña"
                     )
                 },
-                shape= RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(12.dp),
                 singleLine = true
             )
 
             Spacer(modifier = Modifier.height(24.dp))
+
+            if (loginError.isNotEmpty()) {
+                Text(
+                    loginError,
+                    color = Color.Red,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                )
+            }
+
             Button(
                 onClick = {
-                    val auth = Firebase.auth
-
-                    auth.signInWithEmailAndPassword(inputEmail, inputPassword)
-                        .addOnCompleteListener(activity) { task ->
-                            if (task.isSuccessful) {
-                                navController.navigate("home")
-                            } else {
-                                // Sign in failed
+                    if (inputEmail.isNotBlank() && inputPassword.isNotBlank()) {
+                        auth.signInWithEmailAndPassword(inputEmail, inputPassword)
+                            .addOnCompleteListener(activity) { task ->
+                                if (task.isSuccessful) {
+                                    onSuccessfulLogin()
+                                } else {
+                                    loginError = when(task.exception){
+                                        is FirebaseAuthInvalidCredentialsException -> "Correo o contraseña incorrecta"
+                                        is FirebaseAuthInvalidUserException -> "No existe una cuenta con este correo"
+                                        else -> "Error al iniciar sesión"
+                                    }
+                                }
                             }
-                        }
+                    } else {
+                        loginError = "Los campos no pueden estar vacíos"
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -131,12 +154,13 @@ fun LoginScreen(navController: NavController) {
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFFF9900)
                 )
-            ) { Text("Iniciar Sesion")
+            ) {
+                Text("Iniciar Sesion")
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            TextButton(onClick = {})
+            TextButton(onClick = onClickRegister)
             {
                 Text(
                     text = "¿Olvidaste tu contraseña?",
@@ -144,7 +168,6 @@ fun LoginScreen(navController: NavController) {
                 )
             }
             TextButton(onClick = {
-                navController.navigate("register")
             })
             {
                 Text(

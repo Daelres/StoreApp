@@ -15,24 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             StoreAppTheme {
-
-                val myNavController = rememberNavController()
-                val myStartDestination: String = "Login"
-
-                NavHost(
-                    navController = myNavController,
-                    startDestination = myStartDestination,
-                ){
-                    composable("login"){
-                        LoginScreen(myNavController)
-                    }
-                    composable("register"){
-                        RegisterScreen(myNavController)
-                    }
-                    composable("home"){
-                        HomeScreen()
-                    }
-                }
+                NavigationApp()
             }
         }
     }

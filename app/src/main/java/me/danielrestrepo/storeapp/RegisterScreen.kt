@@ -31,21 +31,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Preview
 @Composable
-fun RegisterScreen(navController: NavController){
+fun RegisterScreen(onClickBack : () -> Unit = {}) {
     Scaffold (
             topBar = {
                 TopAppBar(
                     title = {},
                     navigationIcon = {
-                        IconButton(onClick = {
-                            navController.popBackStack()
-                        }) {
+                        IconButton(onClick = onClickBack) {
                             Icon(
                                 Icons.Default.ArrowBack,
                                 contentDescription = null
@@ -146,7 +146,7 @@ fun RegisterScreen(navController: NavController){
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = {navController.navigate("register") },
+                onClick = { },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
@@ -159,7 +159,7 @@ fun RegisterScreen(navController: NavController){
             }
 
             TextButton(onClick = {
-                navController.navigate("login")
+
             }){}
         }
     }

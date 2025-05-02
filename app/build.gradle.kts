@@ -60,10 +60,16 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(platform(libs.firebase.bom))
 
     //Screen navigation
     implementation(libs.androidx.navigation.compose)
+
+    //Firebase
+    //noinspection BomWithoutPlatform
+    implementation(libs.firebase.bom)
+
+    //auth
+    implementation(libs.firebase.auth)
 
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
